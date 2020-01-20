@@ -3,8 +3,6 @@ import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import Home from "./home/Home";
 
-BooksAPI.getAll().then(console.log);
-
 class BooksApp extends React.Component {
   state = {
     /**
@@ -14,70 +12,38 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    // TODO: Fetch data from server
     books: {
-      currentlyReading: [
-        {
-          id: "1",
-          title: "To Kill a Mockingbird",
-          authors: ["Harper Lee"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-          }
-        },
-        {
-          id: "2",
-          title: "Ender's Game",
-          authors: ["Orson Scott Card"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-          }
-        }
-      ],
-      wantToRead: [
-        {
-          id: "1",
-          title: "To Kill a Mockingbird",
-          authors: ["Harper Lee"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-          }
-        },
-        {
-          id: "2",
-          title: "Ender's Game",
-          authors: ["Orson Scott Card"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-          }
-        }
-      ],
-      read: [
-        {
-          id: "1",
-          title: "To Kill a Mockingbird",
-          authors: ["Harper Lee"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-          }
-        },
-        {
-          id: "2",
-          title: "Ender's Game",
-          authors: ["Orson Scott Card"],
-          imageLinks: {
-            thumbnail:
-              "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-          }
-        }
-      ]
+      currentlyReading: [],
+      wantToRead: [],
+      read: []
     }
   };
+
+  componentDidMount() {
+    BooksAPI.getAll()
+      .then(data => {
+        /* 
+        Segregates the list into 3 different categories using
+        the 'shelf' property of a book and creates the following
+        structure:
+        {
+          "currentlyReading": [...],
+          "wantToRead": [...],
+          "read": [...]
+        }   
+        */
+
+        return data.reduce((prev, current) => {
+          prev[current.shelf] = prev[current.shelf]
+            ? prev[current.shelf].concat([current])
+            : [current];
+          return prev;
+        }, {});
+      })
+      .then(books => {
+        this.setState(() => ({ books }));
+      });
+  }
 
   render() {
     return (
@@ -92,14 +58,6 @@ class BooksApp extends React.Component {
                 Close
               </button>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
                 <input type="text" placeholder="Search by title or author" />
               </div>
             </div>
