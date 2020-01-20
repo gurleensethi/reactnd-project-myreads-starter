@@ -4,10 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 function Home(props) {
-  const {
-    books: { currentlyReading, wantToRead, read },
-    updateBookShelf
-  } = props;
+  const { books, updateBookShelf } = props;
   return (
     <div className="list-books">
       <div className="list-books-title">
@@ -17,18 +14,21 @@ function Home(props) {
         <div>
           <BookShelf
             title="Currently Reading"
-            books={currentlyReading}
+            books={books}
             updateBookShelf={updateBookShelf}
+            shelf="currentlyReading"
           />
           <BookShelf
             title="Want to Read"
-            books={wantToRead}
+            books={books}
             updateBookShelf={updateBookShelf}
+            shelf="wantToRead"
           />
           <BookShelf
             title="Currently Reading"
-            books={read}
+            books={books}
             updateBookShelf={updateBookShelf}
+            shelf="read"
           />
         </div>
       </div>
@@ -42,7 +42,7 @@ function Home(props) {
 }
 
 Home.propTypes = {
-  books: PropTypes.object.isRequired
+  books: PropTypes.array.isRequired
 };
 
 export default Home;

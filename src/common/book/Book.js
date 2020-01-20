@@ -18,7 +18,7 @@ function Book(props) {
           ></div>
           <div className="book-shelf-changer">
             <select
-              value={shelf}
+              value={shelf || "none"}
               onChange={event => updateBookShelf(event.target.value)}
             >
               <option value="move" disabled>
