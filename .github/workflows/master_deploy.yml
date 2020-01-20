@@ -23,9 +23,9 @@ jobs:
         npm run build
         cd build
         git init
-        git config --global user.email "sarusethi@rocketmail.com"
-        git config --global user.username "gurleensethi"
-        git remote add origin https:${{secrets.PERSONAL_ACCESS_TOKEN}}@github.com/gurleensethi/reactnd-project-myreads-starter.git
+        git config --global user.email sarusethi@rocketmail.com
+        git config --global user.name Gurleen Sethi
+        git remote add origin https://${{secrets.PERSONAL_ACCESS_TOKEN}}@github.com/gurleensethi/reactnd-project-myreads-starter.git
         git checkout -b gh-pages
         git add .
         git commit -m "Update"
