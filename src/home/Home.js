@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 
 function Home(props) {
   const {
-    books: { currentlyReading, wantToRead, read }
+    books: { currentlyReading, wantToRead, read },
+    updateBookShelf
   } = props;
   return (
     <div className="list-books">
@@ -14,9 +15,21 @@ function Home(props) {
       </div>
       <div className="list-books-content">
         <div>
-          <BookShelf title="Currently Reading" books={currentlyReading} />
-          <BookShelf title="Want to Read" books={wantToRead} />
-          <BookShelf title="Currently Reading" books={read} />
+          <BookShelf
+            title="Currently Reading"
+            books={currentlyReading}
+            updateBookShelf={updateBookShelf}
+          />
+          <BookShelf
+            title="Want to Read"
+            books={wantToRead}
+            updateBookShelf={updateBookShelf}
+          />
+          <BookShelf
+            title="Currently Reading"
+            books={read}
+            updateBookShelf={updateBookShelf}
+          />
         </div>
       </div>
       <div className="open-search">

@@ -25,9 +25,8 @@ class BooksApp extends React.Component {
           "currentlyReading": [...],
           "wantToRead": [...],
           "read": [...]
-        }   
+        }
         */
-
         return data.reduce((prev, current) => {
           prev[current.shelf] = prev[current.shelf]
             ? prev[current.shelf].concat([current])
@@ -40,13 +39,39 @@ class BooksApp extends React.Component {
       });
   }
 
+  handleUpdateBook = (book, shelf) => {
+    // If the book is already on the shelf, no need to
+    // send an api request.
+    if (book.shelf === shelf) {
+      return;
+    }
+
+    BooksAPI.update(book, shelf).then(response => {
+      this.setState(prevState => {
+        const newBooks = { ...prevState.books };
+        newBooks[book.shelf] = newBooks[book.shelf].filter(
+          b => b.id !== book.id
+        );
+        if (shelf !== "none") {
+          newBooks[shelf] = [...(newBooks[shelf] || []), { ...book, shelf }];
+        }
+        return { books: newBooks };
+      });
+    });
+  };
+
   render() {
     return (
       <div className="app">
         <Route
           exact
           path="/"
-          render={() => <Home books={this.state.books} />}
+          render={() => (
+            <Home
+              books={this.state.books}
+              updateBookShelf={this.handleUpdateBook}
+            />
+          )}
         />
         <Route
           exact
